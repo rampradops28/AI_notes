@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI & MCP Master Knowledge Hub | Comprehensive Technical Notes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #090d16;
+      --bg-secondary: #0f172a;
+      --bg-card: rgba(17, 24, 39, 0.75);
+      --bg-card-hover: rgba(30, 41, 59, 0.85);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(99, 102, 241, 0.35);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-subtle: #64748b;
+      --accent-indigo: #6366f1;
+      --accent-cyan: #06b6d4;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --accent-purple: #a855f7;
+      --code-bg: #050811;
+      --sidebar-width: 290px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      line-height: 1.65;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 15% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 70%, rgba(6, 182, 212, 0.06) 0%, transparent 40%);
+      background-attachment: fixed;
+    }
+
+    /* Top Navigation Bar */
+    header.top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(16px);
+      background: rgba(9, 13, 22, 0.85);
+      border-bottom: 1px solid var(--border-color);
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent-indigo), var(--accent-cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: white;
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+    }
+
+    .brand-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(120deg, #ffffff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      padding: 0.2rem 0.6rem;
+      background: rgba(99, 102, 241, 0.15);
+      color: #a5b4fc;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 20px;
+    }
+
+    .search-wrapper {
+      position: relative;
+      width: 380px;
+    }
+
+    .search-wrapper input {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 0.6rem 1rem 0.6rem 2.6rem;
+      color: var(--text-main);
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+
+    .search-wrapper input:focus {
+      outline: none;
+      border-color: var(--accent-indigo);
+      box-shadow: 0 0 12px rgba(99, 102, 241, 0.3);
+      background: rgba(15, 23, 42, 1);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.9rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-subtle);
+      pointer-events: none;
+    }
+
+    /* Layout structure */
+    .app-container {
+      display: flex;
+      min-height: calc(100vh - 70px);
+    }
+
+    /* Sidebar */
+    aside.sidebar {
+      width: var(--sidebar-width);
+      position: sticky;
+      top: 70px;
+      height: calc(100vh - 70px);
+      overflow-y: auto;
+      border-right: 1px solid var(--border-color);
+      background: rgba(15, 23, 42, 0.4);
+      backdrop-filter: blur(10px);
+      padding: 1.5rem 1rem;
+      flex-shrink: 0;
+    }
+
+    aside.sidebar::-webkit-scrollbar {
+      width: 5px;
+    }
+    aside.sidebar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+
+    .nav-group-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-subtle);
+      margin: 1.25rem 0.5rem 0.5rem 0.5rem;
+    }
+
+    .nav-group-title:first-child {
+      margin-top: 0;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.6rem 0.8rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      margin-bottom: 2px;
+    }
+
+    .nav-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+    }
+
+    .nav-item.active {
+      background: rgba(99, 102, 241, 0.15);
+      color: #c7d2fe;
+      border-left: 3px solid var(--accent-indigo);
+    }
+
+    /* Main Content Area */
+    main.content {
+      flex: 1;
+      padding: 2.5rem 3.5rem;
+      max-width: 1280px;
+    }
+
+    /* Filter Pills */
+    .filter-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .pill-btn {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .pill-btn:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      color: var(--text-main);
+    }
+
+    .pill-btn.active {
+      background: linear-gradient(135deg, var(--accent-indigo), #4f46e5);
+      border-color: transparent;
+      color: white;
+      box-shadow: 0 2px 10px rgba(99, 102, 241, 0.35);
+    }
+
+    /* Section Headers */
+    .section-block {
+      margin-bottom: 4rem;
+      scroll-margin-top: 90px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.75rem;
+    }
+
+    .section-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    .icon-indigo { background: rgba(99, 102, 241, 0.2); color: #818cf8; }
+    .icon-cyan { background: rgba(6, 182, 212, 0.2); color: #38bdf8; }
+    .icon-emerald { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+    .icon-amber { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+    .icon-purple { background: rgba(168, 85, 247, 0.2); color: #c084fc; }
+
+    .section-title {
+      font-size: 1.7rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .section-desc {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-top: 0.2rem;
+    }
+
+    /* Grid & Cards */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .cards-grid.two-col {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 1.5rem;
+      backdrop-filter: blur(8px);
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-accent);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      background: var(--bg-card-hover);
+    }
+
+    .card-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+      display: inline-block;
+      margin-bottom: 0.8rem;
+    }
+
+    .tag-blue { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
+    .tag-green { background: rgba(52, 211, 153, 0.15); color: #34d399; }
+    .tag-yellow { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+    .tag-purple { background: rgba(192, 132, 252, 0.15); color: #c084fc; }
+    .tag-rose { background: rgba(244, 63, 94, 0.15); color: #fb7185; }
+
+    .card h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 0.8rem;
+    }
+
+    .card p:last-child {
+      margin-bottom: 0;
+    }
+
+    .card ul {
+      margin-left: 1.25rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .card ul li {
+      margin-bottom: 0.4rem;
+    }
+
+    .card ul li strong {
+      color: var(--text-main);
+    }
+
+    /* Comparison Tables */
+    .table-container {
+      overflow-x: auto;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      margin: 1.25rem 0;
+      background: rgba(15, 23, 42, 0.6);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      text-align: left;
+    }
+
+    th {
+      background: rgba(30, 41, 59, 0.8);
+      color: #e2e8f0;
+      font-weight: 600;
+      padding: 0.85rem 1.1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    td {
+      padding: 0.85rem 1.1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Code Blocks */
+    .code-container {
+      position: relative;
+      background: var(--code-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      margin: 0.9rem 0;
+      overflow: hidden;
+    }
+
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.4rem 0.9rem;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid var(--border-color);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-subtle);
+    }
+
+    .copy-btn {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 0.2rem 0.5rem;
+      border-radius: 5px;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    pre {
+      padding: 1rem;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.84rem;
+      line-height: 1.55;
+      color: #e2e8f0;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(255, 255, 255, 0.07);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.85em;
+      color: #38bdf8;
+    }
+
+    /* Diagrams & ASCII boxes */
+    .diagram-box {
+      background: #040711;
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      border-radius: 12px;
+      padding: 1.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: #93c5fd;
+      overflow-x: auto;
+      margin: 1.25rem 0;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    /* Callout Alert */
+    .callout {
+      border-left: 4px solid var(--accent-indigo);
+      background: rgba(99, 102, 241, 0.08);
+      padding: 1rem 1.25rem;
+      border-radius: 0 10px 10px 0;
+      margin: 1.25rem 0;
+      font-size: 0.9rem;
+    }
+
+    .callout.success {
+      border-left-color: var(--accent-emerald);
+      background: rgba(16, 185, 129, 0.08);
+    }
+
+    .callout.warning {
+      border-left-color: var(--accent-amber);
+      background: rgba(245, 158, 11, 0.08);
+    }
+
+    .callout-title {
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 0.3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    @media (max-width: 900px) {
+      aside.sidebar {
+        display: none;
+      }
+      main.content {
+        padding: 1.5rem;
+      }
+      .cards-grid.two-col {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="top-nav">
+    <div class="brand">
+      <div class="brand-icon">⚡</div>
+      <div class="brand-title">AI & MCP Master Knowledge Hub</div>
+      <span class="brand-badge">Complete Reference</span>
+    </div>
+
+    <div class="search-wrapper">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Search concepts, tools, formulas, terms... (Ctrl+K)" />
+    </div>
+  </header>
+
+  <div class="app-container">
+    <!-- Sticky Left Sidebar -->
+    <aside class="sidebar">
+      <div class="nav-group-title">Getting Started</div>
+      <a href="#overview" class="nav-item active">📊 Executive Overview</a>
+
+      <div class="nav-group-title">Core Architecture</div>
+      <a href="#mcp-core" class="nav-item">🔌 Model Context Protocol (MCP)</a>
+      <a href="#mcp-primitives" class="nav-item">🧩 MCP Primitives (4 Pillars)</a>
+      <a href="#mcp-commands" class="nav-item">💻 MCP Commands & Setup</a>
+
+      <div class="nav-group-title">Retrieval & Vectors</div>
+      <a href="#rag-vectors" class="nav-item">🔍 RAG & Vector Databases</a>
+      <a href="#chunking-eval" class="nav-item">✂️ Chunking & Evaluations</a>
+      <a href="#advanced-rag" class="nav-item">🚀 Advanced RAG & CAG</a>
+
+      <div class="nav-group-title">AI Models & Engineering</div>
+      <a href="#foundation-models" class="nav-item">🧠 Foundation & Frontier Models</a>
+      <a href="#scientific-ai" class="nav-item">⚙️ Scientific AI: KogneX & BrahmX</a>
+      <a href="#architecture-devops" class="nav-item">🏗️ System Architecture & EKS</a>
+
+      <div class="nav-group-title">Verified Assessments</div>
+      <a href="#mcp-exam" class="nav-item">🎓 MCP Final Exam Archive</a>
+    </aside>
+
+    <!-- Main Content Stream -->
+    <main class="content">
+
+      <!-- Filter Pills -->
+      <div class="filter-pills">
+        <button class="pill-btn active" data-filter="all">Show All</button>
+        <button class="pill-btn" data-filter="mcp">MCP Protocol</button>
+        <button class="pill-btn" data-filter="rag">RAG & Vectors</button>
+        <button class="pill-btn" data-filter="llm">LLMs & Weights</button>
+        <button class="pill-btn" data-filter="sciai">Scientific AI (KogneX)</button>
+        <button class="pill-btn" data-filter="devops">Architecture & Systems</button>
+        <button class="pill-btn" data-filter="exam">Exam Archive</button>
+      </div>
+
+      <!-- SECTION: OVERVIEW -->
+      <section id="overview" class="section-block" data-category="all">
+        <div class="section-header">
+          <div class="section-icon icon-indigo">📊</div>
+          <div>
+            <h2 class="section-title">Executive Overview & Knowledge Map</h2>
+            <p class="section-desc">A unified technical reference combining hands-on MCP server engineering, RAG pipelines, foundation models, and scientific AI frameworks.</p>
+          </div>
+        </div>
+
+        <div class="cards-grid">
+          <div class="card">
+            <span class="card-tag tag-blue">Standard</span>
+            <h3>Model Context Protocol (MCP)</h3>
+            <p>Universal open protocol connecting AI models (Claude, custom LLMs) safely to external tools, databases, and enterprise REST APIs over stdio or SSE.</p>
+            <ul>
+              <li><strong>Host vs Client vs Server</strong> architectural separation.</li>
+              <li><strong>JSON-RPC 2.0</strong> structured function messaging.</li>
+              <li><strong>Tools, Resources, Prompts, Sampling</strong> primitives.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <span class="card-tag tag-green">Technique</span>
+            <h3>Retrieval-Augmented Generation (RAG)</h3>
+            <p>Empowers LLMs with private, real-time factual knowledge by converting documents into high-dimensional vector embeddings stored in vector databases.</p>
+            <ul>
+              <li><strong>Open-book exam analogy:</strong> Accurate grounding.</li>
+              <li><strong>Chunking & Overlap:</strong> Semantic sliding window.</li>
+              <li><strong>Vector Databases:</strong> ChromaDB, Milvus, Qdrant.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <span class="card-tag tag-purple">Engineering</span>
+            <h3>Scientific AI & Simulation (KogneX)</h3>
+            <p>Physics-aware engineering platform that accelerates high-fidelity simulations through AI surrogate models and physics-informed gates.</p>
+            <ul>
+              <li><strong>AI = Guess</strong> (Explore design space).</li>
+              <li><strong>Physics = Check</strong> (Sanity rule verification).</li>
+              <li><strong>Solver = Proof</strong> (OpenFOAM verification).</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout">
+          <div class="callout-title">💡 The Critical Conceptual Distinction: MCP vs. RAG</div>
+          <p><strong>MCP is a protocol/standard</strong> (how the AI connects to outside worlds).<br>
+          <strong>RAG is an information retrieval technique</strong> (how documents are chunked, embedded, and retrieved).<br>
+          <em>Key insight:</em> A RAG pipeline can be packaged <strong>inside</strong> an MCP server to give Claude Desktop a private semantic memory tool!</p>
+        </div>
+      </section>
+
+      <!-- SECTION 1: MCP CORE -->
+      <section id="mcp-core" class="section-block" data-category="mcp">
+        <div class="section-header">
+          <div class="section-icon icon-indigo">🔌</div>
+          <div>
+            <h2 class="section-title">1. Model Context Protocol (MCP) Architecture</h2>
+            <p class="section-desc">How the 4-part architectural model coordinates LLM reasoning with safe, sandboxed execution.</p>
+          </div>
+        </div>
+
+        <div class="cards-grid two-col">
+          <div class="card">
+            <span class="card-tag tag-blue">Role Separation</span>
+            <h3>The 4 Core Architectural Roles</h3>
+            <ul>
+              <li><strong>Host (Claude Desktop / Custom App):</strong> The user interface and security coordinator. Discovers servers and requests user approval.</li>
+              <li><strong>LLM (The Brain):</strong> Analyzes prompts, reasons about tool schemas, and decides which tool to call with which arguments. <em>The LLM never executes code!</em></li>
+              <li><strong>MCP Client (`client.py` / Built-in):</strong> The postman that speaks JSON-RPC 2.0 to transmit commands between host and server.</li>
+              <li><strong>MCP Server (`server.py`):</strong> The hands that actually execute SQL queries, file I/O, and REST API calls. <em>The server never makes decisions!</em></li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <span class="card-tag tag-purple">Golden Rules</span>
+            <h3>The 4 Inviolable MCP Rules</h3>
+            <ul>
+              <li><strong>1. LLM only decides, never executes:</strong> It outputs structured JSON requests.</li>
+              <li><strong>2. Server only executes, never decides:</strong> It runs Python code blindly when instructed.</li>
+              <li><strong>3. Host is the Postman & Guard:</strong> Enforces security confirmations before modifying actions.</li>
+              <li><strong>4. MCP servers never talk to each other:</strong> The Host coordinates multi-hop chaining between servers.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Architecture ASCII Box -->
+        <div class="diagram-box">
++-----------------------------------------------------------------------------------+
+|                                  CLIENT / HOST                                    |
+|   (e.g., Claude Desktop OR your custom client.py)                                 |
+|                                                                                   |
+|   +-----------------------+              +------------------------------------+   |
+|   |          LLM          |              |             MCP Client             |   |
+|   |  (Brain / Reasoning)  |              |       (Postman / Connector)        |   |
+|   +-----------+-----------+              +------------------+-----------------+   |
++---------------|---------------------------------------------|---------------------+
+                |                                             |
+                |                                             | JSON-RPC 2.0 (stdio / SSE)
+                |                                             |
++---------------|---------------------------------------------|---------------------+
+|               |                                             |                     |
+|               |                                  +----------v----------+          |
+|               |                                  |     MCP Server      |          |
+|               |                                  |    (server.py)      |          |
+|               |                                  +----------+----------+          |
+|               |                                             |                     |
+|               |                                             | Local API / DB / Disk
+|               |                                             v                     |
+|               |                                  +---------------------+          |
+|               |                                  | External Resources  |          |
+|               |                                  | (GitHub, SQLite...) |          |
+|               |                                  +---------------------+          |
+|               |                                                                   |
+|               |                             SERVER ENVIRONMENT                    |
++---------------+-------------------------------------------------------------------+
+        </div>
+
+        <!-- REST vs JSON-RPC Table -->
+        <h3>Communication Protocol: REST vs JSON-RPC</h3>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Property</th>
+                <th>REST (Web APIs)</th>
+                <th>JSON-RPC 2.0 (MCP Protocol)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Paradigm</strong></td>
+                <td>Resource-oriented (`/users/123/profile`)</td>
+                <td>Procedure / Function-call oriented (`tools/call`)</td>
+              </tr>
+              <tr>
+                <td><strong>HTTP Verbs</strong></td>
+                <td>GET, POST, PUT, DELETE, PATCH</td>
+                <td>Standardized single POST or bidirectional pipe</td>
+              </tr>
+              <tr>
+                <td><strong>Identifiers</strong></td>
+                <td>URL paths & query strings</td>
+                <td>Method names (`name: "create_issue"`) + payload params</td>
+              </tr>
+              <tr>
+                <td><strong>Ideal Use Case</strong></td>
+                <td>Public web endpoints, CRUD data retrieval</td>
+                <td>Remote procedure calls, tool calling, internal agent IPC</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SECTION: MCP PRIMITIVES -->
+      <section id="mcp-primitives" class="section-block" data-category="mcp">
+        <div class="section-header">
+          <div class="section-icon icon-cyan">🧩</div>
+          <div>
+            <h2 class="section-title">2. The 4 MCP Primitives</h2>
+            <p class="section-desc">Every capability an MCP server provides falls into one of these four standardized primitives.</p>
+          </div>
+        </div>
+
+        <div class="cards-grid">
+          <div class="card">
+            <span class="card-tag tag-blue">[DO] Action</span>
+            <h3>1. Tools (`@mcp.tool()`)</h3>
+            <p>Active executable functions invoked autonomously by the LLM to perform business logic, query databases, or call REST APIs.</p>
+            <ul>
+              <li><strong>Caller:</strong> LLM decides dynamically.</li>
+              <li><strong>Inputs:</strong> Dynamic arguments typed with Python type hints.</li>
+              <li><strong>Side Effects:</strong> Can write, update, delete, or create.</li>
+              <li><strong>Examples:</strong> <code>apply_leave()</code>, <code>create_issue()</code>, <code>search_documents()</code>.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <span class="card-tag tag-green">[READ] Context</span>
+            <h3>2. Resources (`@mcp.resource()`)</h3>
+            <p>Read-only reference data attached via custom URI protocols. Provides structured background information without side-effects.</p>
+            <ul>
+              <li><strong>Caller:</strong> Typically attached by the User via <code>@</code> in chat.</li>
+              <li><strong>Identifier:</strong> Custom URI scheme (e.g. <code>leave://policy</code>).</li>
+              <li><strong>Side Effects:</strong> Pure read-only. Zero mutations.</li>
+              <li><strong>Examples:</strong> <code>github://user/profile</code>, <code>leave://records</code>.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <span class="card-tag tag-yellow">[GUIDE] Workflow</span>
+            <h3>3. Prompts (`@mcp.prompt()`)</h3>
+            <p>Pre-packaged, parameterized prompt templates that guide consistent workflows for common enterprise tasks.</p>
+            <ul>
+              <li><strong>Caller:</strong> User selects from UI menu.</li>
+              <li><strong>Parameters:</strong> Variables supplied by user (e.g. <code>employee_id</code>).</li>
+              <li><strong>Value:</strong> Standardizes answers and eliminates vague user prompts.</li>
+              <li><strong>Examples:</strong> <code>review_leave_request(employee_id)</code>.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <span class="card-tag tag-purple">[THINK] Bi-Directional</span>
+            <h3>4. Sampling (`sampling/createMessage`)</h3>
+            <p>Enables the MCP Server to ask the Host's LLM to generate text or perform reasoning in the middle of a tool execution.</p>
+            <ul>
+              <li><strong>Direction:</strong> Server &rarr; Host LLM.</li>
+              <li><strong>Use Case:</strong> Multi-step summarization or autonomous validation.</li>
+              <li><strong>Safety:</strong> User retains oversight over sub-sampling requests.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: MCP COMMANDS & SETUP -->
+      <section id="mcp-commands" class="section-block" data-category="mcp">
+        <div class="section-header">
+          <div class="section-icon icon-emerald">💻</div>
+          <div>
+            <h2 class="section-title">3. MCP Setup & CLI Reference Guide</h2>
+            <p class="section-desc">Essential commands and workflows for creating, developing, and running MCP servers.</p>
+          </div>
+        </div>
+
+        <div class="cards-grid two-col">
+          <div class="card">
+            <span class="card-tag tag-blue">Modern Standard</span>
+            <h3>Recommended Workflow (Using `uv`)</h3>
+            <div class="code-container">
+              <div class="code-header"><span>PowerShell / Bash</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+              <pre># 1. Install uv on Windows
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# 2. Initialize project
+uv init my-mcp-server
+cd my-mcp-server
+
+# 3. Add MCP with CLI inspector tools
+uv add "mcp[cli]"
+
+# 4. Run the development inspector UI
+uv run mcp dev main.py
+
+# 5. Automatically install into Claude Desktop
+uv run mcp install main.py</pre>
+            </div>
+          </div>
+
+          <div class="card">
+            <span class="card-tag tag-purple">Configuration</span>
+            <h3>Claude Desktop Config Format</h3>
+            <p>File path on Windows:<br>
+            <code>%APPDATA%\Claude\claude_desktop_config.json</code></p>
+            <div class="code-container">
+              <div class="code-header"><span>claude_desktop_config.json</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+              <pre>{
+  "mcpServers": {
+    "GitHub": {
+      "command": "python",
+      "args": ["E:\\ai\\MCP\\mcp_04_github_api\\server.py"],
+      "env": {
+        "GITHUB_TOKEN": "ghp_yourSecureTokenHere"
+      }
+    }
+  }
+}</pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: RAG & VECTORS -->
+      <section id="rag-vectors" class="section-block" data-category="rag">
+        <div class="section-header">
+          <div class="section-icon icon-cyan">🔍</div>
+          <div>
+            <h2 class="section-title">4. Retrieval-Augmented Generation (RAG) Fundamentals</h2>
+            <p class="section-desc">Overcoming LLM memory boundaries and hallucination by grounding answers in private vector data.</p>
+          </div>
+        </div>
+
+        <div class="cards-grid">
+          <div class="card">
+            <span class="card-tag tag-blue">Concept</span>
+            <h3>The 3 Letters of RAG</h3>
+            <ul>
+              <li><strong>R (Retrieval):</strong> Search 1,000+ document chunks and extract only the top 2-3 most relevant paragraphs.</li>
+              <li><strong>A (Augmentation):</strong> Inject those paragraphs alongside strict anti-hallucination instructions into the prompt.</li>
+              <li><strong>G (Generation):</strong> The LLM synthesizes a fluent, cited response based <em>strictly</em> on the injected context.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <span class="card-tag tag-green">Mathematical Meaning</span>
+            <h3>Vector Embeddings & Cosine Similarity</h3>
+            <p>An embedding model converts text into high-dimensional decimal coordinates (e.g. 384 or 1536 floats).</p>
+            <ul>
+              <li><strong>Semantic Proximity:</strong> "Car" and "Automobile" have nearly identical vector coordinates.</li>
+              <li><strong>Cosine Similarity (1.0 to -1.0):</strong> Measures the cosine of the angle between vectors (1.0 = identical meaning).</li>
+              <li><strong>Distance Metric:</strong> ChromaDB uses distance (0.0 = closest match).</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <span class="card-tag tag-purple">Storage</span>
+            <h3>What a Vector DB Stores</h3>
+            <p>Unlike SQLite which indexes text strings, Vector DBs (ChromaDB, Milvus, Qdrant) index geometry:</p>
+            <ul>
+              <li><strong>ID:</strong> Unique chunk identifier (<code>chunk_12</code>).</li>
+              <li><strong>Document Text:</strong> The raw paragraph.</li>
+              <li><strong>Embedding:</strong> Vector array <code>[-0.04, 0.81, ...]</code>.</li>
+              <li><strong>Metadata:</strong> Document origin, page numbers, timestamps.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: CHUNKING & EVALS -->
+      <section id="chunking-eval" class="section-block" data-category="rag">
+        <div class="section-header">
+          <div class="section-icon icon-emerald">✂️</div>
+          <div>
+            <h2 class="section-title">5. Chunking Strategies, Overlap & Evaluation Metrics</h2>
+            <p class="section-desc">How to partition documents effectively without destroying context boundaries.</p>
+          </div>
+        </div>
+
+        <div class="cards-grid two-col">
+          <div class="card">
+            <span class="card-tag tag-blue">Chunking Styles</span>
+            <h3>3 Primary Chunking Approaches</h3>
+            <ul>
+              <li><strong>Fixed-Size Chunking:</strong> Splits text by strict character or word count (e.g. 500 characters). Fast, deterministic, and widely used.</li>
+              <li><strong>Semantic Chunking:</strong> Calculates embedding similarity between consecutive sentences; splits where coherence drops. High quality, higher compute cost.</li>
+              <li><strong>Agentic Chunking:</strong> Uses an LLM to read the document and decide natural topical boundaries. Highest quality, but slower and expensive.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <span class="card-tag tag-green">Sliding Window</span>
+            <h3>The Role of Chunk Overlap</h3>
+            <p>Standard practice: <strong>Overlap = 10% to 20% of chunk size</strong> (e.g., 50 characters overlap for a 500-character chunk).</p>
+            <ul>
+              <li><strong>The Problem:</strong> Cutting blindly splits key sentences in half, causing queries like "When was Ram promoted?" to lose the connection between the person and the date.</li>
+              <li><strong>The Solution:</strong> Duplicated words act as a <em>semantic bridge</em> across chunk borders.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Evaluation Metrics Table -->
+        <h3>Production RAG Evaluation Metrics</h3>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>What It Measures</th>
+                <th>Ideal Target / Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Recall @ K</strong></td>
+                <td>How many of the total relevant documents were successfully retrieved within top K results.</td>
+                <td>High coverage; ensure no vital facts are missed.</td>
+              </tr>
+              <tr>
+                <td><strong>Precision @ K</strong></td>
+                <td>What fraction of retrieved chunks are actually relevant to the question.</td>
+                <td>Minimize noise and keep LLM context clean.</td>
+              </tr>
+              <tr>
+                <td><strong>Mean Reciprocal Rank (MRR)</strong></td>
+                <td>Reciprocal rank (1 / position) of the first relevant document.</td>
+                <td>Critical for Q&A systems where only the top answer counts.</td>
+              </tr>
+              <tr>
+                <td><strong>NDCG</strong></td>
+                <td>Normalized Discounted Cumulative Gain; weights relevance by position.</td>
+                <td>Overall ranking quality; highly relevant items must appear first.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SECTION: ADVANCED RAG & CAG -->
+      <section id="advanced-rag" class="section-block" data-category="rag">
+        <div class="section-header">
+          <div class="section-icon icon-purple">🚀</div>
+          <div>
+            <h2 class="section-title">6. Advanced RAG Architectures & CAG</h2>
+            <p class="section-desc">Beyond simple naive search: Multi-query, hierarchical, agentic workflows and semantic caching.</p>
+          </div>
+        </div>
+
+        <div class="cards-grid">
+          <div class="card">
+            <span class="card-tag tag-purple">Architecture</span>
+            <h3>Agentic RAG</h3>
+            <p>An autonomous agent plans query execution, queries vector stores iteratively, evaluates intermediate facts, and performs multi-hop reasoning before delivering the answer.</p>
+          </div>
+
+          <div class="card">
+            <span class="card-tag tag-blue">De-noising</span>
+            <h3>Multi-Query RAG</h3>
+            <p>The LLM generates 3-5 variations of the user's initial question from different angles, queries the vector database for all variants, and deduplicates the retrieved chunks.</p>
+          </div>
+
+          <div class="card">
+            <span class="card-tag tag-green">Enterprise Tree</span>
+            <h3>Hierarchical RAG</h3>
+            <p>Indexes corporate documents across an organizational hierarchy: <code>/Company &rarr; /Division &rarr; /Department &rarr; /Team</code> for multi-stage scoped routing.</p>
+          </div>
+
+          <div class="card">
+            <span class="card-tag tag-yellow">Cost Optimizer</span>
+            <h3>Cache-Augmented Generation (CAG)</h3>
+            <p>Caches embeddings and generated answers for frequent queries. Solves the redundancy and latency cost of running identical vector searches repeatedly.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: FOUNDATION MODELS -->
+      <section id="foundation-models" class="section-block" data-category="llm">
+        <div class="section-header">
+          <div class="section-icon icon-indigo">🧠</div>
+          <div>
+            <h2 class="section-title">7. Foundation Models, Weights & Hyperparameters</h2>
+            <p class="section-desc">Core definitions across modern LLMs, model families, weights, and inference settings.</p>
+          </div>
+        </div>
+
+        <div class="cards-grid two-col">
+          <div class="card">
+            <span class="card-tag tag-blue">Hierarchy</span>
+            <h3>Model Classification</h3>
+            <ul>
+              <li><strong>Small Language Models (SLM):</strong> Compact, efficient, highly capable on edge devices (e.g. Phi-4).</li>
+              <li><strong>Large Language Models (LLM):</strong> Broad generalized capabilities across reasoning, code, and language (e.g. GPT-4, Claude Sonnet).</li>
+              <li><strong>Frontier Models:</strong> The absolute bleeding edge of intelligence and benchmark capabilities (e.g. GPT-5, Claude Opus).</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <span class="card-tag tag-purple">Weights</span>
+            <h3>Open Weights vs. Closed Weights</h3>
+            <ul>
+              <li><strong>Open Weights (Llama, Phi, DeepSeek):</strong> Model weights are publicly downloadable. Can be self-hosted, fine-tuned, and run on private air-gapped clusters.</li>
+              <li><strong>Closed Weights (GPT-4, Claude, Gemini):</strong> Accessed exclusively via proprietary cloud APIs. No direct weight inspection; easier maintenance.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Temperature Card -->
+        <div class="card">
+          <span class="card-tag tag-amber">Hyperparameter Tuning</span>
+          <h3>Understanding Temperature (0.0 to 2.0)</h3>
+          <p>Controls output randomness by scaling probability distributions during token generation:</p>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Temperature Range</th>
+                  <th>Behavior</th>
+                  <th>Recommended Task</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>0.1 &ndash; 0.3</code></td>
+                  <td>Strictly deterministic, low variance, mathematically precise</td>
+                  <td>Code generation, SQL queries, JSON-RPC schema output</td>
+                </tr>
+                <tr>
+                  <td><code>0.5 &ndash; 0.7</code></td>
+                  <td>Balanced, factual yet natural fluency</td>
+                  <td>Business chatbots, technical documentation, Q&A</td>
+                </tr>
+                <tr>
+                  <td><code>0.8 &ndash; 1.2</code></td>
+                  <td>High creativity, diverse vocabulary, unexpected ideas</td>
+                  <td>Brainstorming, creative writing, marketing copy</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: SCIENTIFIC AI -->
+      <section id="scientific-ai" class="section-block" data-category="sciai">
+        <div class="section-header">
+          <div class="section-icon icon-cyan">⚙️</div>
+          <div>
+            <h2 class="section-title">8. Scientific AI & Simulation: The KogneX & BrahmX Platform</h2>
+            <p class="section-desc">Engineering AI architecture integrating machine learning surrogates with high-fidelity physics solvers.</p>
+          </div>
+        </div>
+
+        <div class="cards-grid two-col">
+          <div class="card">
+            <span class="card-tag tag-blue">Core Definitions</span>
+            <h3>Surrogate Models & OpenFOAM</h3>
+            <ul>
+              <li><strong>Surrogate Model:</strong> A fast mathematical approximation trained to mimic expensive simulations (CFD / FEA), delivering millisecond predictions instead of hours-long calculations.</li>
+              <li><strong>OpenFOAM:</strong> Leading open-source C++ computational fluid dynamics (CFD) solver package used in aerospace and automotive engineering.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <span class="card-tag tag-emerald">The Triad Formula</span>
+            <h3>Engineering Sanity Equation</h3>
+            <p style="font-size: 1.1rem; font-weight: 600; color: #a5b4fc;">AI = Guess &nbsp;|&nbsp; Physics = Check &nbsp;|&nbsp; Solver = Proof</p>
+            <ul>
+              <li>AI proposes design variations rapidly.</li>
+              <li>Physics gates enforce conservation of mass, momentum, and boundary rules.</li>
+              <li>Solvers execute full-fidelity simulations to produce verified truth.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- The 4 Stages of KogneX -->
+        <div class="card">
+          <span class="card-tag tag-purple">Lifecycle</span>
+          <h3>The 4 Stages of KogneX</h3>
+          <div class="cards-grid" style="margin-top: 1rem;">
+            <div><strong>1. Explore:</strong> AI scans thousands of potential candidate geometries.</div>
+            <div><strong>2. Validate:</strong> Physics checks whether proposals make physical sense.</div>
+            <div><strong>3. Execute:</strong> Solvers (OpenFOAM) run high-fidelity verification.</div>
+            <div><strong>4. Learn:</strong> Verified results are stored to refine future predictions.</div>
+          </div>
+        </div>
+
+        <!-- 3-Layer Architecture ASCII Diagram -->
+        <div class="diagram-box">
+                   AI Hub Network
+                          |
+      -----------------------------------------
+      |                |                     |
+  Industry         Universities          Researchers
+      |                |                     |
+      -----------------------------------------
+                          |
+                       BrahmX
+                     (Data Layer: Ingestion, Cleaning & Organization)
+                          |
+                          v
+                       BrahmAI
+                  (Foundation Model: Trained Physics-ML Weights)
+                          |
+         ---------------------------------
+         |               |              |
+      KogneX          AhamX         BrahmEdge
+   (Industry AI)   (Talent OS)    (Consumer AI)
+        </div>
+      </section>
+
+      <!-- SECTION: ARCHITECTURE & DEVOPS -->
+      <section id="architecture-devops" class="section-block" data-category="devops">
+        <div class="section-header">
+          <div class="section-icon icon-amber">🏗️</div>
+          <div>
+            <h2 class="section-title">9. System Architecture, Statelessness & Cloud DevOps</h2>
+            <p class="section-desc">Design principles for scalable distributed systems, containers, and orchestration.</p>
+          </div>
+        </div>
+
+        <div class="cards-grid two-col">
+          <div class="card">
+            <span class="card-tag tag-blue">State Model</span>
+            <h3>Stateful vs. Stateless Systems</h3>
+            <ul>
+              <li><strong>Stateful:</strong> Server retains session context across multiple requests (e.g. database transactions, shopping carts). Requires sticky routing.</li>
+              <li><strong>Stateless:</strong> Every incoming request is entirely isolated and independent (HTTP, serverless lambdas, vending machine analogy). Enables effortless horizontal scaling.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <span class="card-tag tag-emerald">Cloud Containerization</span>
+            <h3>Amazon EKS & Microservices</h3>
+            <ul>
+              <li><strong>Microservices:</strong> Decoupled, independently deployable services communicating over lightweight protocols (REST / gRPC / JSON-RPC).</li>
+              <li><strong>Amazon EKS (Elastic Kubernetes Service):</strong> Managed Kubernetes service automating cluster provisioning, worker node scaling, and control plane resilience on AWS.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: EXAM ARCHIVE -->
+      <section id="mcp-exam" class="section-block" data-category="exam">
+        <div class="section-header">
+          <div class="section-icon icon-emerald">🎓</div>
+          <div>
+            <h2 class="section-title">10. MCP Final Certification Exam & Technical Archive</h2>
+            <p class="section-desc">The 8 verified examination questions and responses evaluating practical MCP proficiency (Score: 74/80 - 92.5%).</p>
+          </div>
+        </div>
+
+        <div class="cards-grid">
+          <div class="card">
+            <span class="card-tag tag-green">Q1: Transport Protocol</span>
+            <h3>stdio vs. SSE in Production</h3>
+            <p><strong>Question:</strong> Which transport to pick for cloud deployment across an office network?</p>
+            <p><strong>Verified Answer:</strong> Use <strong>SSE (Server-Sent Events over HTTP)</strong>. `stdio` is limited to local child processes on the same physical host; SSE runs over HTTP, enabling access via Docker containers and cloud URLs.</p>
+          </div>
+
+          <div class="card">
+            <span class="card-tag tag-green">Q2: Schema Design</span>
+            <h3>Docstrings & Type Hints</h3>
+            <p><strong>Question:</strong> Why are docstrings and type hints mandatory for `@mcp.tool()`?</p>
+            <p><strong>Verified Answer:</strong> Docstrings instruct the LLM on tool intent and context. Type hints are auto-compiled by MCP into formal JSON Schemas, guaranteeing the LLM supplies properly typed arguments and knows mandatory vs. optional parameters.</p>
+          </div>
+
+          <div class="card">
+            <span class="card-tag tag-green">Q3: Primitives</span>
+            <h3>Tool vs. Resource</h3>
+            <p><strong>Question:</strong> Main difference and who invokes each?</p>
+            <p><strong>Verified Answer:</strong> Tools are executable actions called <em>autonomously by the LLM</em> to perform logic or state changes. Resources are read-only contextual datasets identified by URIs and selected by the user.</p>
+          </div>
+
+          <div class="card">
+            <span class="card-tag tag-green">Q4: Security</span>
+            <h3>Environment Variable Injection</h3>
+            <p><strong>Question:</strong> Why avoid hardcoded tokens and how does Claude pass them?</p>
+            <p><strong>Verified Answer:</strong> Hardcoding risks repository leaks. Claude Desktop injects secrets through the `"env"` block in `claude_desktop_config.json`, which passes keys securely into the server process.</p>
+          </div>
+
+          <div class="card">
+            <span class="card-tag tag-green">Q5: Data Integrity</span>
+            <h3>ACID Atomicity & Rollback</h3>
+            <p><strong>Question:</strong> Why is transactional rollback critical during tool crashes?</p>
+            <p><strong>Verified Answer:</strong> Without rollback, mid-execution crashes leave corrupted or duplicate records in the database. `conn.rollback()` satisfies Atomicity ("All or Nothing"), restoring clean state.</p>
+          </div>
+
+          <div class="card">
+            <span class="card-tag tag-green">Q6: Multi-Server</span>
+            <h3>Orchestration & Chaining</h3>
+            <p><strong>Question:</strong> Can Claude coordinate multiple MCP servers in a single prompt?</p>
+            <p><strong>Verified Answer:</strong> Yes. Claude Desktop starts all configured servers, merges their tools into a unified registry, and allows the LLM to chain calls (e.g. read from Leave server, write to GitHub server).</p>
+          </div>
+
+          <div class="card">
+            <span class="card-tag tag-green">Q7: Resilience</span>
+            <h3>Graceful Error Strings vs. Exceptions</h3>
+            <p><strong>Question:</strong> Why return friendly text instead of unhandled exceptions?</p>
+            <p><strong>Verified Answer:</strong> Unhandled exceptions crash the JSON-RPC pipe and halt the reasoning chain. Returning a clean error string allows the LLM to inspect the failure, self-correct, or inform the user politely.</p>
+          </div>
+
+          <div class="card">
+            <span class="card-tag tag-green">Q8: Workflows</span>
+            <h3>The MCP Prompt Primitive</h3>
+            <p><strong>Question:</strong> What is an MCP Prompt and why use it?</p>
+            <p><strong>Verified Answer:</strong> MCP Prompts provide standardized, reusable company prompt templates with parameters, ensuring reliable and structured LLM outputs every time.</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    function copyCode(btn) {
+      const pre = btn.parentElement.nextElementSibling;
+      navigator.clipboard.writeText(pre.innerText).then(() => {
+        const originalText = btn.innerText;
+        btn.innerText = 'Copied!';
+        btn.style.color = '#34d399';
+        setTimeout(() => {
+          btn.innerText = originalText;
+          btn.style.color = '';
+        }, 2000);
+      });
+    }
+
+    const filterButtons = document.querySelectorAll('.pill-btn');
+    const sections = document.querySelectorAll('.section-block');
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.getAttribute('data-filter');
+
+        sections.forEach(sec => {
+          const category = sec.getAttribute('data-category');
+          if (filter === 'all' || category === filter || category === 'all') {
+            sec.style.display = 'block';
+          } else {
+            sec.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', (e) => {
+      const term = e.target.value.toLowerCase().trim();
+      const cards = document.querySelectorAll('.card');
+
+      if (!term) {
+        cards.forEach(card => card.style.display = 'block');
+        return;
+      }
+
+      cards.forEach(card => {
+        const text = card.innerText.toLowerCase();
+        if (text.includes(term)) {
+          card.style.display = 'block';
+          card.style.borderColor = 'rgba(99, 102, 241, 0.6)';
+        } else {
+          card.style.display = 'none';
+          card.style.borderColor = '';
+        }
+      });
+    });
+
+    window.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        searchInput.focus();
+      }
+    });
+
+    const navLinks = document.querySelectorAll('.sidebar .nav-item');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - 120;
+        if (pageYOffset >= sectionTop) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === '#' + current) {
+          link.classList.add('active');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
