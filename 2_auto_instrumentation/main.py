@@ -1,72 +1,128 @@
 """
-==============================================================================
- OpenTelemetry: 2. Auto-Instrumentation (Zero-Code)
-==============================================================================
- LOOK CLOSELY AT THIS FILE:
- - There is NO 'import opentelemetry'
- - There is NO 'tracer = ...'
- - There is NO 'with tracer.start_as_current_span(...)'
+Controller Layer (FastAPI Application)
+=====================================
+Receives HTTP requests, validates request payloads with Pydantic,
+and delegates execution to UserService.
 
- This is 100% standard, ordinary FastAPI code!
-
- HOW AUTO-INSTRUMENTATION WORKS:
- Instead of modifying your Python code, you launch this app with the
- OpenTelemetry CLI runner:
-
-     opentelemetry-instrument --traces_exporter console uvicorn main:app
-
- OpenTelemetry automatically hooks into FastAPI, inspects every incoming route,
- measures the exact response time, and prints the generated Spans!
-==============================================================================
+NOTE: This file has ZERO OpenTelemetry code.
+Everything is auto-instrumented from the outside!
 """
 
 import logging
-import time
-from fastapi import FastAPI, HTTPException
+from contextlib import asynccontextmanager
+from typing import List
+from fastapi import FastAPI, Depends, HTTPException, status
+from pydantic import BaseModel, EmailStr
+from sqlalchemy.orm import Session
 
-# Optional: ship logs to Loki via OTLP
+from database import init_db, get_db
+from repository import UserRepository
+from service import UserService
+
+# Optional: ship logs to Loki if loki_logger is present
 try:
     import loki_logger
 except Exception:
     pass
 
-logger = logging.getLogger("book-store")
+logger = logging.getLogger("user-service")
+
+
+# ------------------------------------------------------------------------------
+# Pydantic Schemas
+# ------------------------------------------------------------------------------
+class UserCreateRequest(BaseModel):
+    name: str
+    email: EmailStr
+    role: str = "member"
+
+
+class UserResponse(BaseModel):
+    id: int
+    name: str
+    email: str
+    role: str
+
+
+# ------------------------------------------------------------------------------
+# Lifespan: Auto-initialize Database Tables
+# ------------------------------------------------------------------------------
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: Ensure tables exist and seed demo data
+    init_db()
+    logger.info("Database initialized successfully.")
+    yield
+
+
+# ------------------------------------------------------------------------------
+# Dependency Injection: Controller -> Service -> Repository
+# ------------------------------------------------------------------------------
+def get_user_service(db: Session = Depends(get_db)) -> UserService:
+    repository = UserRepository(db)
+    return UserService(repository)
+
 
 app = FastAPI(
-    title="Beginner Book Store (Auto-Instrumentation)",
-    description="This code has ZERO telemetry imports. Everything is traced automatically!",
+    title="Phase 1: Layered Architecture (Controller -> Service -> Repo -> DB)",
+    description="Vanilla FastAPI application with zero OpenTelemetry code inside.",
+    lifespan=lifespan,
 )
 
-# Simulated database
-books_db = {
-    "1": {"title": "Designing Data-Intensive Applications", "author": "Martin Kleppmann", "price": 45.00},
-    "2": {"title": "Clean Code", "author": "Robert C. Martin", "price": 38.50},
-    "3": {"title": "Fluent Python", "author": "Luciano Ramalho", "price": 52.00},
-}
 
-
+# ------------------------------------------------------------------------------
+# Controllers (Routes)
+# ------------------------------------------------------------------------------
 @app.get("/")
 def home():
-    logger.info("Home endpoint requested")
-    return {"message": "Welcome to the Book Store! Visit /books/1 to see auto-tracing in action."}
+    logger.info("Healthcheck endpoint called.")
+    return {
+        "status": "healthy",
+        "message": "Welcome to Layered Architecture API (Controller -> Service -> Repository -> PostgreSQL)",
+        "endpoints": {
+            "get_user": "GET /users/{user_id}",
+            "list_users": "GET /users",
+            "create_user": "POST /users",
+            "swagger": "GET /docs",
+        },
+    }
 
 
-@app.get("/books/{book_id}")
-def get_book(book_id: str):
-    logger.info("Fetching book with ID: %s", book_id)
-    time.sleep(0.05)
+@app.get("/users/{user_id}", response_model=UserResponse)
+def get_user(user_id: int, service: UserService = Depends(get_user_service)):
+    """
+    Controller: Receives request for a user by ID.
+    Calls UserService.get_user() -> UserRepository.get_by_id() -> PostgreSQL.
+    """
+    logger.info("Controller: Handling GET /users/%s", user_id)
+    try:
+        user = service.get_user(user_id)
+        return user
+    except ValueError as exc:
+        logger.warning("Controller: User %s not found: %s", user_id, str(exc))
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc))
 
-    if book_id not in books_db:
-        logger.warning("Book ID %s was not found in database", book_id)
-        raise HTTPException(status_code=404, detail="Book not found")
 
-    return {"book_id": book_id, "data": books_db[book_id]}
+@app.get("/users", response_model=List[UserResponse])
+def list_users(service: UserService = Depends(get_user_service)):
+    """
+    Controller: Receives request to list all users.
+    Calls UserService.get_all_users() -> UserRepository.list_all() -> PostgreSQL.
+    """
+    logger.info("Controller: Handling GET /users")
+    return service.get_all_users()
 
 
-@app.get("/search")
-def search_books(q: str = ""):
-    logger.info("Searching books for query: '%s'", q)
-    time.sleep(0.03)
-    results = [b for b in books_db.values() if q.lower() in b["title"].lower()]
-    return {"query": q, "count": len(results), "results": results}
-
+@app.post("/users", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+def create_user(payload: UserCreateRequest, service: UserService = Depends(get_user_service)):
+    """
+    Controller: Receives request to create a new user.
+    Calls UserService.create_user() -> UserRepository.create() -> PostgreSQL.
+    """
+    logger.info("Controller: Handling POST /users for email '%s'", payload.email)
+    try:
+        user = service.create_user(name=payload.name, email=payload.email, role=payload.role)
+        return user
+    except ValueError as exc:
+        logger.warning("Controller: User creation failed: %s", str(exc))
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc))

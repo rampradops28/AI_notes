@@ -12,7 +12,7 @@ import subprocess
 import sys
 
 # 1. OpenTelemetry Standard Environment Configuration
-os.environ["OTEL_SERVICE_NAME"] = "book-store"
+os.environ["OTEL_SERVICE_NAME"] = "user-service"
 os.environ["OTEL_EXPORTER_OTLP_PROTOCOL"] = "http/protobuf"
 
 # Export Traces to Tempo
